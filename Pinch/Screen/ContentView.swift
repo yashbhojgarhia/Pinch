@@ -35,7 +35,7 @@ struct ContentView: View {
                     .offset(x: imageOffset.width, y: imageOffset.height)
                 //.animation(.linear(duration: 1), value: isAnimating)
                     .scaleEffect(imageScale)
-                //MARK: - Tap Gesture
+                //MARK: - 1. Tap Gesture
                     .onTapGesture(count: 2) {
                         if imageScale == 1 {
                             withAnimation(.spring()) {
@@ -46,7 +46,7 @@ struct ContentView: View {
                             resetImageState()
                         }
                     }
-                //MARK: - Drag Gesture
+                //MARK: - 2. Drag Gesture
                     .gesture(
                         DragGesture()
                             .onChanged({ value in
@@ -56,6 +56,27 @@ struct ContentView: View {
                             })
                             .onEnded({ _ in
                                 if imageScale <= 1 {
+                                    resetImageState()
+                                }
+                            })
+                    )
+                //MARK: - 3. Magnification Gesture
+                    .gesture(
+                        MagnificationGesture()
+                            .onChanged({ value in
+                                withAnimation(.linear(duration: 1)) {
+                                    if imageScale >= 1 && imageScale <= 5 {
+                                        imageScale = value
+                                    } else if imageScale > 5 {
+                                        imageScale = 5
+                                    }
+                                }
+                            })
+                            .onEnded({ _ in
+                                if imageScale > 5 {
+                                    imageScale = 5
+                                }
+                                else if imageScale <= 1 {
                                     resetImageState()
                                 }
                             })
